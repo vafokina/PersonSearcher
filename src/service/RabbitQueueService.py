@@ -18,13 +18,16 @@ class RabbitQueueService:
     channel = None
 
     def __init__(self):
-        self.log.info("Start connection to RabbitMQ")
-        credentials = pika.PlainCredentials(self.USER, self.PASS)
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.HOST, port=self.PORT, credentials=credentials))
-        self.channel = self.connection.channel()
+        try:
+            self.log.info("Start connection to RabbitMQ")
+            credentials = pika.PlainCredentials(self.USER, self.PASS)
+            self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=self.HOST, port=self.PORT, credentials=credentials))
+            self.channel = self.connection.channel()
 
-        self.channel.queue_declare(queue=self.FIRST_REQUEST_QUEUE_NAME, durable=True)
-        self.channel.queue_declare(queue=self.SECOND_REQUEST_QUEUE_NAME, durable=True)
+            self.channel.queue_declare(queue=self.FIRST_REQUEST_QUEUE_NAME, durable=True)
+            self.channel.queue_declare(queue=self.SECOND_REQUEST_QUEUE_NAME, durable=True)
+        except Exception as ex:
+            self.log.error(str(type(ex)) + " : " + str(ex))
 
     def __enter__(self):
         return self

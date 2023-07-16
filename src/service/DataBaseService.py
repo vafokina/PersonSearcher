@@ -26,10 +26,13 @@ class DataBaseService:
     log = get_logger("DataBaseService")
 
     def __init__(self):
-        self.log.info("Start connection to PostgreSQL")
-        self.connection = psycopg2.connect(dbname=self.DATABASE_NAME, user=self.USER, 
-            password=self.PASS, host=self.HOST, port=self.PORT)
-        #self.cursor = self.connection.cursor()
+        try:
+            self.log.info("Start connection to PostgreSQL")
+            self.connection = psycopg2.connect(dbname=self.DATABASE_NAME, user=self.USER, 
+                password=self.PASS, host=self.HOST, port=self.PORT)
+            #self.cursor = self.connection.cursor()
+        except Exception as ex:
+            self.log.error(str(type(ex)) + " : " + str(ex))
 
     def __enter__(self):
         return self
